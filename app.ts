@@ -4,6 +4,11 @@ import cors from 'cors';
 import * as bodyParser from 'body-parser';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import commentRouter from "./controller/commentController";
+import communityRouter from "./controller/communityController";
+import postRouter from "./controller/postController";
+import userRouter from "./controller/userController";
+import {expressjwt} from "express-jwt";
 
 const app = express();
 dotenv.config();
@@ -11,6 +16,17 @@ const port = process.env.APP_PORT || 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(
+    expressjwt({
+        secret: process.env.JWT_SECRET || 'default',
+        algorithms: ["HS256"],
+    }).unless({
+        path: ['/api-docs', /^\/api-docs\/.*/, '/user/login', '/status', '/user/register']
+    }))
+app.use('/comment', commentRouter);
+app.use('/community', communityRouter);
+app.use('/post', postRouter);
+app.use('/user', userRouter);
 
 app.get('/status', (req, res) => {
     res.json({ message: 'Back-end is running...' });

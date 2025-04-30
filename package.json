@@ -2,11 +2,11 @@
     "name": "courses_api",
     "version": "1.0.0",
     "description": "Courses API",
-    "author": "johanpck",
+    "author": "bluedit",
     "license": "ISC",
     "main": "app.ts",
     "prisma": {
-        "schema": "prisma/schema.prisma"
+        "schema": "./repository/prisma/schema.prisma"
     },
     "scripts": {
         "test": "jest",
