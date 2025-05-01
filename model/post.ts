@@ -6,14 +6,14 @@ import { Post as PostPrisma, User as UserPrisma, Community as CommunityPrisma, C
 export class Post {
     readonly id?: number;
     readonly title: string;
-    readonly description?: string;
+    readonly content?: string;
     readonly user: User;
     readonly comments: Comment[];
 
     constructor(post: Post) {
         this.id = post.id;
         this.title = post.title;
-        this.description = post.description;
+        this.content = post.content;
         this.user = post.user;
         this.comments = post.comments;
     }
@@ -39,7 +39,7 @@ export class Post {
         return new Post({
             id: post.id,
             title: post.title,
-            description: post.description,
+            content: post.content,
             user: User.from(post.user),
             comments: post.comments.map(comment => Comment.from(comment))
         });

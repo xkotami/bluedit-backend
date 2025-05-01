@@ -1,8 +1,27 @@
 import communityDb from '../repository/communityRepository';
+import {CommunityInput} from "../types";
 
 const getAllCommunities = async (token: string) => {
     try {
-        return await communityDb.getAllCommunities()
+        return await communityDb.getAllCommunities();
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+const createCommunity = async (input: CommunityInput, token: string) => {
+    try {
+        return await communityDb.createCommunity(input);
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+const findCommunityById = async (id: number) => {
+    try {
+        return await communityDb.findCommunityById(id);
     } catch (error) {
         console.log(error);
         throw error;
@@ -10,5 +29,7 @@ const getAllCommunities = async (token: string) => {
 }
 
 export default {
-    getAllCommunities
+    getAllCommunities,
+    createCommunity,
+    findCommunityById,
 }

@@ -43,7 +43,7 @@ const main = async () => {
     const webDevCommunity = await prisma.community.create({
         data: {
             name: 'Web Development',
-            description: 'All things web development - frontend, backend, and everything in between',
+            content: 'All things web development - frontend, backend, and everything in between',
             users: {
                 connect: [{ id: user1.id }, { id: user2.id }, { id: user3.id }]
             }
@@ -53,7 +53,7 @@ const main = async () => {
     const javascriptCommunity = await prisma.community.create({
         data: {
             name: 'JavaScript',
-            description: 'Discussion about JavaScript and its ecosystem',
+            content: 'Discussion about JavaScript and its ecosystem',
             users: {
                 connect: [{ id: user1.id }, { id: user2.id }]
             }

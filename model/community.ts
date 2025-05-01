@@ -1,7 +1,6 @@
 import { Post } from './post';
 import { User } from './user';
 import { User as UserPrisma, Post as PostPrisma, Community as CommunityPrisma, Comment as CommentPrisma } from '@prisma/client';
-import { Comment } from './comment';
 
 export class Community {
     readonly id?: number;

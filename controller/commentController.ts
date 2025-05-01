@@ -1,11 +1,12 @@
-import express from "express";
+import express, {response} from "express";
 import commentService from "../service/commentService";
+import {CommentInput} from "../types";
 
 const commentRouter = express.Router();
 
 /**
  * @swagger
- * /comments:
+ * /comment:
  *   get:
  *     summary: Retrieve all comments
  *     description: Fetches all comments from the database. Requires proper authentication token.
@@ -65,7 +66,139 @@ commentRouter.get("/", async (req, res, next) => {
         res.status(500).json({message: error.message});
         next(error);
     }
+});
 
+/**
+ * @swagger
+ * /comment:
+ *   post:
+ *     summary: Create a new comment
+ *     description: Adds a new comment to a post. Requires valid input and an authorization token.
+ *     tags:
+ *       - Comments
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - text
+ *               - userId
+ *               - postId
+ *             properties:
+ *               text:
+ *                 type: string
+ *                 description: The content text of the comment.
+ *               userId:
+ *                 type: integer
+ *                 description: The ID of the user creating the comment.
+ *               postId:
+ *                 type: integer
+ *                 description: The ID of the post being commented on.
+ *     parameters:
+ *       - in: header
+ *         name: Authorization
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: A bearer token for authentication (e.g., "Bearer token").
+ *     responses:
+ *       200:
+ *         description: The comment was created successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   description: ID of the created comment.
+ *                 text:
+ *                   type: string
+ *                 userId:
+ *                   type: integer
+ *                 postId:
+ *                   type: integer
+ *                 createdAt:
+ *                   type: string
+ *                   format: date-time
+ *                   description: Timestamp when the comment was created.
+ *       400:
+ *         description: Bad request. Invalid input data.
+ *       401:
+ *         description: Unauthorized. Token is invalid or missing.
+ *       500:
+ *         description: Internal server error.
+ */
+commentRouter.post("/", async (req, res, next) => {
+    try {
+        const input = req.body as CommentInput;
+        const response = await commentService.createComment(input, "token");
+        res.status(200).json(response);
+    } catch (error: any) {
+        console.log(error);
+        res.status(500).json({ message: error.message });
+        next(error);
+    }
+});
+
+/**
+ * @swagger
+ * /comment/{id}:
+ *   get:
+ *     summary: Retrieve a comment by ID
+ *     description: Fetches the details of a specific comment from the system using its unique ID.
+ *     tags:
+ *       - Comments
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The unique ID of the comment to retrieve.
+ *     responses:
+ *       200:
+ *         description: Comment details retrieved successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   description: The unique ID of the comment.
+ *                 content:
+ *                   type: string
+ *                   description: The content of the comment.
+ *                 userId:
+ *                   type: integer
+ *                   description: The ID of the user who created this comment.
+ *                 postId:
+ *                   type: integer
+ *                   description: The ID of the post this comment is associated with.
+ *                 createdAt:
+ *                   type: string
+ *                   format: date-time
+ *                   description: The timestamp when the comment was created.
+ *       400:
+ *         description: Bad request. Invalid comment ID format.
+ *       404:
+ *         description: Comment not found with the given ID.
+ *       500:
+ *         description: Internal server error.
+ */
+commentRouter.get("/:id", async (req, res, next) => {
+    try {
+        const id = parseInt(req.params.id);
+        const response = await commentService.findCommentById(id);
+        res.status(200).json(response);
+    } catch (error: any) {
+        console.log(error);
+        res.status(500).json({ message: error.message });
+        next(error);
+    }
 });
 
 export default commentRouter

@@ -28,3 +28,34 @@ export type Comment = {
     createdBy: User;
     parent?: Comment;
 }
+
+export type CommentInput = {
+    text: string;
+    userId: number;
+    postId: number;
+}
+
+export type ReplyInput = {
+    text: string;
+    userId: number;
+    postId: number;
+    parentId: number;
+}
+
+export type PostInput = {
+    title: string;
+    content: string;
+    userId: number;
+    communityId: number;
+}
+
+export type UserInput = {
+    username: string;
+    email: string;
+    password: string;
+}
+
+export type CommunityInput = {
+    name: string;
+    description: string;
+}
