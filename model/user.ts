@@ -10,7 +10,7 @@ export class User {
     readonly points: number;
     readonly password: string;
 
-    constructor(user: UserType) {
+    constructor(user: User) {
         this.id = user.id;
         this.username = user.username;
         this.email = user.email;
@@ -27,5 +27,4 @@ export class User {
             password
         })
     }
-
 }

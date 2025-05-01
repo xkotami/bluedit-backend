@@ -1,8 +1,7 @@
 import { Post } from './post';
 import { User } from './user';
-import {Community as CommunityType} from '../types/index';
-import { User as UserPrisma, Post as PostPrisma, Community as CommunityPrisma, Comment as CommentPrisma} from '@prisma/client';
-
+import { User as UserPrisma, Post as PostPrisma, Community as CommunityPrisma, Comment as CommentPrisma } from '@prisma/client';
+import { Comment } from './comment';
 
 export class Community {
     readonly id?: number;
@@ -11,7 +10,7 @@ export class Community {
     readonly posts: Post[];
     readonly users: User[];
 
-    constructor(community: CommunityType) {
+    constructor(community: Community) {
         this.id = community.id;
         this.name = community.name;
         this.description = community.description;
@@ -19,19 +18,28 @@ export class Community {
         this.users = community.users;
     }
 
-    static from({id, posts, users, name, description}: CommunityPrisma & {
-        posts: (PostPrisma & {
-            comments: CommentPrisma[],
-            user: UserPrisma;
-            community: CommunityPrisma;
+    static from(community: CommunityPrisma & {
+        posts?: (PostPrisma & {
+            comments: (CommentPrisma & {
+                createdBy: UserPrisma,
+                parent?: (CommentPrisma & {
+                    createdBy: UserPrisma
+                }) | null,
+                replies?: (CommentPrisma & {
+                    createdBy: UserPrisma
+                })[]
+            })[],
+            user: UserPrisma,
+            community: CommunityPrisma
         })[],
-        users: UserPrisma[]}): Community {
+        users?: UserPrisma[]
+    }): Community {
         return new Community({
-            id,
-            name,
-            description,
-            posts: posts.map(post => Post.from(post)),
-            users: users.map(user => User.from(user))
-        })
+            id: community.id,
+            name: community.name,
+            description: community.description,
+            posts: community.posts?.map(post => Post.from(post)) || [],
+            users: community.users?.map(user => User.from(user)) || []
+        });
     }
 }
