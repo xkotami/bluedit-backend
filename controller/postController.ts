@@ -49,7 +49,7 @@ postRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
         const response = await postService.getAllPosts();
         res.status(200).json(response);
     } catch (error: any) {
-        next(error);
+        console.log(error);
         res.status(500).json({ error: error.message });
     }
 });
@@ -133,7 +133,6 @@ postRouter.post("/", async (req: Request, res: Response, next: NextFunction) => 
         res.status(200).json(response);
     } catch (error: any) {
         console.log(error);
-        next(error);
         res.status(500).json({ message: error.message });
     }
 });
@@ -202,7 +201,6 @@ postRouter.get('/:id', async (req: Request, res: Response, next: NextFunction) =
         res.status(200).json(response);
     } catch (error: any) {
         console.log(error);
-        next(error);
         res.status(500).json({ message: error.message });
     }
 });

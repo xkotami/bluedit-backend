@@ -11,6 +11,7 @@ export class User {
     readonly password: string;
 
     constructor(user: User) {
+        this.validate(user);
         this.id = user.id;
         this.username = user.username;
         this.email = user.email;
@@ -20,11 +21,23 @@ export class User {
 
     static from({id, username, email, points,  password}: UserPrisma ): User {
         return new User({
+            validate(user: User): void {
+            },
             id,
             username,
             email,
             points,
             password
         })
+    }
+
+    validate(user: User): void {
+        // Validate email contains '@' and '.'
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(user.email)) {
+            throw new Error('ERROR_INVALID_EMAIL_FORMAT');
+        }
+        if (!user.email) throw new Error('ERROR_EMAIL_IS_NULL');
+        if (!user.password) throw new Error('ERROR_PASSWORD_IS_NULL');
     }
 }

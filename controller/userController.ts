@@ -47,7 +47,6 @@ userRouter.get("/", async (req, res, next) => {
         res.status(200).json(response);
     } catch (error: any) {
         console.log(error);
-        next(error);
         res.status(500).json({message: error.message});
     }
 });
@@ -107,7 +106,6 @@ userRouter.post("/", async (req, res, next) => {
         res.status(201).json(response);
     } catch (error: any) {
         console.log(error);
-        next(error);
         res.status(500).json({message: error.message});
     }
 });
@@ -169,7 +167,6 @@ userRouter.get("/:id", async (req, res, next) => {
         res.status(200).json(response);
     } catch (error: any) {
         console.log(error);
-        next(error);
         res.status(500).json({message: error.message});
     }
 });

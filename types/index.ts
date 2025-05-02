@@ -59,3 +59,8 @@ export type CommunityInput = {
     name: string;
     description: string;
 }
+
+export type JWTPayload = {
+    email: string;
+    userId?: number;
+}

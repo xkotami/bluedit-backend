@@ -139,7 +139,6 @@ commentRouter.post("/", async (req, res, next) => {
     } catch (error: any) {
         console.log(error);
         res.status(500).json({ message: error.message });
-        next(error);
     }
 });
 

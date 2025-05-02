@@ -10,6 +10,7 @@ export class Community {
     readonly users: User[];
 
     constructor(community: Community) {
+        this.validate(community);
         this.id = community.id;
         this.name = community.name;
         this.description = community.description;
@@ -34,11 +35,18 @@ export class Community {
         users?: UserPrisma[]
     }): Community {
         return new Community({
+            validate(community: Community): void {
+            },
             id: community.id,
             name: community.name,
             description: community.description,
             posts: community.posts?.map(post => Post.from(post)) || [],
             users: community.users?.map(user => User.from(user)) || []
         });
+    }
+
+    validate(community: Community) {
+        if (!community.description) throw new Error('ERROR_DESCRIPTION_NOT_PRESENT');
+        if (!community.name) throw new Error('ERROR_NAME_NOT_PRESENT');
     }
 }

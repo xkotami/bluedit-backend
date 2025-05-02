@@ -50,7 +50,6 @@ communityRouter.get("/", async (req, res, next) => {
         res.status(200).json(response);
     } catch (error) {
         console.log(error);
-        next(error);
         res.status(500).json({ message: "Internal server error" });
     }
 });
@@ -117,7 +116,6 @@ communityRouter.post("/", async (req, res, next) => {
         res.status(200).json(response);
     } catch (error: any) {
         console.log(error);
-        next(error);
         res.status(500).json({ message: error.message });
     }
 });
@@ -168,7 +166,6 @@ communityRouter.get("/:id", async (req, res, next) => {
         res.status(200).json(response);
     } catch (error: any) {
         console.log(error);
-        next(error);
         res.status(500).json({ message: error.message });
     }
 });
