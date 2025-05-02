@@ -64,7 +64,7 @@ const main = async () => {
     const reactPost = await prisma.post.create({
         data: {
             title: 'React 19 is coming - what to expect?',
-            description: 'I heard about some new features coming in React 19. Anyone have details?',
+            content: 'I heard about some new features coming in React 19. Anyone have details?',
             userId: user1.id,
             communityId: webDevCommunity.id
         }
@@ -73,7 +73,7 @@ const main = async () => {
     const typescriptPost = await prisma.post.create({
         data: {
             title: 'TypeScript vs JavaScript - when to use which?',
-            description: 'As a new developer, I\'m confused about when to use TypeScript vs plain JavaScript. Any advice?',
+            content: 'As a new developer, I\'m confused about when to use TypeScript vs plain JavaScript. Any advice?',
             userId: user2.id,
             communityId: javascriptCommunity.id
         }
