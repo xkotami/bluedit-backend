@@ -37,7 +37,7 @@ const createCommunity = async (input: CommunityInput) => {
         const community = await database.community.create({
             data: {
                 name: input.name,
-                content: input.description,
+                description: input.description,
             },
             include: {
                 posts: {
