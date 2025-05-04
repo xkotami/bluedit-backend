@@ -13,7 +13,6 @@ export class Comment{
     readonly parent?: Comment;
 
     constructor(comment: Comment) {
-        this.validate(comment);
         this.id = comment.id;
         this.text = comment.text;
         this.createdAt = comment.createdAt;
@@ -33,8 +32,6 @@ export class Comment{
         })[]
     }): Comment {
         return new Comment({
-            validate(comment: Comment): void {
-            },
             id: comment.id,
             text: comment.text,
             createdAt: comment.createdAt,
@@ -43,9 +40,5 @@ export class Comment{
             replies: comment.replies ? comment.replies.map(reply => Comment.from(reply)) : [],
             parent: comment.parent ? Comment.from(comment.parent) : undefined
         });
-    }
-
-    validate(comment: Comment) {
-        if (!comment.text) throw new Error('ERROR_TEXT_NOT_PRESENT');
     }
 }

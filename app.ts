@@ -16,13 +16,13 @@ const port = process.env.APP_PORT || 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
-// app.use(
-//     expressjwt({
-//         secret: process.env.JWT_SECRET || 'default',
-//         algorithms: ["HS256"],
-//     }).unless({
-//         path: ['/api-docs', /^\/api-docs\/.*/, '/user/login', '/status', '/user/register']
-//     }))
+ app.use(
+     expressjwt({
+         secret: process.env.JWT_SECRET || 'default',
+         algorithms: ["HS256"],
+     }).unless({
+         path: ['/api-docs', /^\/api-docs\/.*/, '/user/login', '/status', '/user/register']
+     }))
 app.use('/comment', commentRouter);
 app.use('/community', communityRouter);
 app.use('/post', postRouter);
@@ -40,11 +40,20 @@ const swaggerOpts = {
     definition: {
         openapi: '3.0.0',
         info: {
-            title: 'Courses API',
+            title: 'Bluedit API',
             version: '1.0.0',
         },
     },
-    apis: ['./controller/*.ts'],
+    components: {
+        securitySchemes: {
+            bearerAuth: {
+                type: "http",
+                scheme: "bearer",
+                bearerFormat: "JWT" // Not required but recommended for clarity
+            }
+        }
+    },
+    apis: ['./controller/*Controller.ts'],
 };
 
 const swaggerSpec = swaggerJSDoc(swaggerOpts);

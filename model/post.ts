@@ -11,7 +11,6 @@ export class Post {
     readonly comments: Comment[];
 
     constructor(post: Post) {
-        this.validate(post);
         this.id = post.id;
         this.title = post.title;
         this.content = post.content;
@@ -38,18 +37,11 @@ export class Post {
         })[]
     }): Post {
         return new Post({
-            validate(post: Post): void {
-            },
             id: post.id,
             title: post.title,
             content: post.content,
             user: User.from(post.user),
             comments: post.comments.map(comment => Comment.from(comment))
         });
-    }
-
-    validate(post: Post) {
-        if (!post.content) throw new Error('ERROR_CONTENT_NOT_PRESENT');
-        if (!post.title) throw new Error('ERROR_TITLE_NOT_PRESENT');
     }
 }

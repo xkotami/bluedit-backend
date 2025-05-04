@@ -12,13 +12,6 @@ const userRouter = express.Router();
  *     description: Fetches a list of all users in the system. Requires a valid authorization token.
  *     tags:
  *       - Users
- *     parameters:
- *       - in: header
- *         name: Authorization
- *         required: true
- *         schema:
- *           type: string
- *         description: A bearer token for authentication (e.g., "Bearer token").
  *     responses:
  *       200:
  *         description: A list of users.
@@ -67,12 +60,6 @@ userRouter.get("/", async (req, res, next) => {
  *         schema:
  *           type: integer
  *         description: The unique ID of the user to retrieve.
- *       - in: header
- *         name: Authorization
- *         required: true
- *         schema:
- *           type: string
- *         description: A bearer token for authentication (e.g., "Bearer token").
  *     responses:
  *       200:
  *         description: User details retrieved successfully.
@@ -104,8 +91,9 @@ userRouter.get("/", async (req, res, next) => {
  */
 userRouter.get("/:id", async (req, res, next) => {
     try {
+        const token = req.headers.authorization!.split(" ")[1];
         const id: number = parseInt(req.params.id);
-        const response = await userService.findUserById(id, "token");
+        const response = await userService.findUserById(id, token);
         res.status(200).json(response);
     } catch (error: any) {
         console.log(error);

@@ -31,7 +31,7 @@ export type Comment = {
 
 export type CommentInput = {
     text: string;
-    userId: number;
+    userId?: number;
     postId: number;
 }
 

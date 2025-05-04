@@ -8,17 +8,12 @@ const commentRouter = express.Router();
  * @swagger
  * /comment:
  *   get:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Retrieve all comments
  *     description: Fetches all comments from the database. Requires proper authentication token.
  *     tags:
  *       - Comments
- *     parameters:
- *       - in: header
- *         name: Authorization
- *         required: true
- *         description: Bearer token for authentication. Provide it as "Bearer <token>".
- *         schema:
- *           type: string
  *     responses:
  *       200:
  *         description: Successfully retrieved all comments.
@@ -59,12 +54,12 @@ const commentRouter = express.Router();
  */
 commentRouter.get("/", async (req, res, next) => {
     try{
-        const response = await commentService.getAllComments("token");
+        const token = req.headers.authorization!.split(" ")[1];
+        const response = await commentService.getAllCommentsByUser(token);
         res.status(200).json(response);
     } catch(error: any) {
         console.log(error);
         res.status(500).json({message: error.message});
-        next(error);
     }
 });
 
@@ -72,6 +67,8 @@ commentRouter.get("/", async (req, res, next) => {
  * @swagger
  * /comment:
  *   post:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Create a new comment
  *     description: Adds a new comment to a post. Requires valid input and an authorization token.
  *     tags:
@@ -90,19 +87,9 @@ commentRouter.get("/", async (req, res, next) => {
  *               text:
  *                 type: string
  *                 description: The content text of the comment.
- *               userId:
- *                 type: integer
- *                 description: The ID of the user creating the comment.
  *               postId:
  *                 type: integer
  *                 description: The ID of the post being commented on.
- *     parameters:
- *       - in: header
- *         name: Authorization
- *         required: true
- *         schema:
- *           type: string
- *         description: A bearer token for authentication (e.g., "Bearer token").
  *     responses:
  *       200:
  *         description: The comment was created successfully.
@@ -133,8 +120,9 @@ commentRouter.get("/", async (req, res, next) => {
  */
 commentRouter.post("/", async (req, res, next) => {
     try {
+        const token = req.headers.authorization!.split(" ")[1];
         const input = req.body as CommentInput;
-        const response = await commentService.createComment(input, "token");
+        const response = await commentService.createComment(input, token);
         res.status(200).json(response);
     } catch (error: any) {
         console.log(error);
@@ -146,6 +134,8 @@ commentRouter.post("/", async (req, res, next) => {
  * @swagger
  * /comment/{id}:
  *   get:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Retrieve a comment by ID
  *     description: Fetches the details of a specific comment from the system using its unique ID.
  *     tags:
@@ -190,6 +180,7 @@ commentRouter.post("/", async (req, res, next) => {
  */
 commentRouter.get("/:id", async (req, res, next) => {
     try {
+        const token = req.headers.authorization!.split(" ")[1];
         const id = parseInt(req.params.id);
         const response = await commentService.findCommentById(id);
         res.status(200).json(response);
@@ -199,5 +190,69 @@ commentRouter.get("/:id", async (req, res, next) => {
         next(error);
     }
 });
+
+/**
+ * @swagger
+ * /comment/post/{id}:
+ *   get:
+ *     summary: Retrieve comments for a specific post
+ *     description: Fetches all comments associated with a given post ID.
+ *     tags:
+ *       - Comments
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: The ID of the post for which to fetch comments
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: A list of comments for the specified post
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     description: The unique ID of the comment
+ *                   postId:
+ *                     type: integer
+ *                     description: The ID of the post the comment belongs to
+ *                   userId:
+ *                     type: integer
+ *                     description: The ID of the user who created the comment
+ *                   text:
+ *                     type: string
+ *                     description: The content of the comment
+ *                   createdAt:
+ *                     type: string
+ *                     format: date-time
+ *                     description: Timestamp when the comment was created
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Error message
+ *     security:
+ *       - bearerAuth: []
+ */
+commentRouter.get("/post/:id", async (req, res, next) => {
+    try {
+        const response = await commentService.getCommentsByPost(parseInt(req.params.id));
+        res.status(200).json(response);
+    } catch (error: any) {
+        console.log(error);
+        res.status(500).json({ message: error.message });
+    }
+})
 
 export default commentRouter

@@ -46,6 +46,7 @@ const postRouter = express.Router();
  */
 postRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
+        const token = req.headers.authorization!.split(" ")[1];
         const response = await postService.getAllPosts();
         res.status(200).json(response);
     } catch (error: any) {
@@ -128,6 +129,7 @@ postRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
  */
 postRouter.post("/", async (req: Request, res: Response, next: NextFunction) => {
     try {
+        const token = req.headers.authorization!.split(" ")[1];
         const input: PostInput = req.body as PostInput;
         const response = await postService.createPost(input, "token");
         res.status(200).json(response);
@@ -196,6 +198,7 @@ postRouter.post("/", async (req: Request, res: Response, next: NextFunction) => 
  */
 postRouter.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
     try {
+        const token = req.headers.authorization!.split(" ")[1];
         const id: string = req.params.id;
         const response = await postService.findPostById(id, "token");
         res.status(200).json(response);
