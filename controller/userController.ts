@@ -51,64 +51,6 @@ userRouter.get("/", async (req, res, next) => {
     }
 });
 
-/**
- * @swagger
- * /user:
- *   post:
- *     summary: Create a new user
- *     description: Creates a new user in the database. Requires a valid request body.
- *     tags:
- *       - Users
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - username
- *               - email
- *               - password
- *             properties:
- *               username:
- *                 type: string
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       201:
- *         description: User created successfully.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: integer
- *                 username:
- *                   type: string
- *                 email:
- *                   type: string
- *                 points:
- *                   type: integer
- *                   description: Initial value of points, default is 0.
- *       400:
- *         description: Bad request. Invalid input data.
- *       500:
- *         description: Internal server error.
- */
-userRouter.post("/", async (req, res, next) => {
-    try {
-        const input: UserInput = req.body as UserInput;
-        console.log(input);
-        const response = await userService.createUser(input, "token");
-        res.status(201).json(response);
-    } catch (error: any) {
-        console.log(error);
-        res.status(500).json({message: error.message});
-    }
-});
 
 /**
  * @swagger
