@@ -1,6 +1,6 @@
 import database from "./database";
 import {User} from "../model/user";
-import {UserInput} from "../types";
+import {Login, Register, UserInput} from "../types";
 
 const getAllUsers = async () => {
     const users = await database.user.findMany({
@@ -44,8 +44,64 @@ const getUserById = async (id: number) => {
         throw error;
     }
 }
+
+const getUserByEmail = async (email: string) => {
+    try {
+        const user = await database.user.findUnique({
+            where: {
+                email: email
+            }
+        })
+        if (user) {
+            return User.from(user)
+        } else {
+            return null;
+        }
+    } catch(error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+const getUserByUsername = async (username: string) => {
+    try {
+        const user = await database.user.findUnique({
+            where: {
+                username: username
+            }
+        })
+        if (user) {
+            return User.from(user)
+        } else {
+            throw new Error('ERROR_USER_NOT_FOUND');
+        }
+    } catch(error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+const register = async (input: Register) => {
+    try {
+        const user = await database.user.create({
+            data: {
+                email: input.email,
+                username: input.username,
+                password: input.password,
+                points: 0
+            }
+        })
+        return User.from(user);
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
 export default {
     getAllUsers,
     createUser,
     getUserById,
+    getUserByEmail,
+    register,
+    getUserByUsername
 }
