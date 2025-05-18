@@ -207,4 +207,16 @@ postRouter.get('/:id', async (req: Request, res: Response, next: NextFunction) =
     }
 });
 
+postRouter.get('/community/:id', async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const communityId: string = req.params.id;
+        const response = await postService.getAllPostsOfCommunity(communityId, "token");
+        res.status(200).json(response);
+    } catch (error: any) {
+        console.log(error);
+        next(error);
+        res.status(500).json({ message: error.message });
+    }
+});
+
 export default postRouter

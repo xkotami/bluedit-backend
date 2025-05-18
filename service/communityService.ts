@@ -28,8 +28,18 @@ const findCommunityById = async (id: number) => {
     }
 }
 
+const findCommunityByPostId = async (postId: number) => {
+    try {
+        return await communityDb.findCommunityByPostId(postId);
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
 export default {
     getAllCommunities,
     createCommunity,
     findCommunityById,
+    findCommunityByPostId,
 }

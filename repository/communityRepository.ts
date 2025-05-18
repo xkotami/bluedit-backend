@@ -114,9 +114,56 @@ const findCommunityById = async (id: number) => {
     }
 }
 
+const findCommunityByPostId = async (postId: number) => {
+    try {
+        const community = await database.community.findFirst({
+            where: {
+                posts: {
+                    some: {
+                        id: postId
+                    }
+                }
+            },
+            include: {
+                posts: {
+                    include: {
+                        comments: {
+                            include: {
+                                createdBy: true,
+                                parent: {
+                                    include: {
+                                        createdBy: true
+                                    }
+                                },
+                                replies: {
+                                    include: {
+                                        createdBy: true
+                                    }
+                                }
+                            }
+                        },
+                        user: true,
+                        community: true
+                    }
+                },
+                users: true
+            }
+        })
+        if (community) {
+            return Community.from(community);
+        } else {
+            throw new Error("ERROR_COMMUNITY_NOT_FOUND")
+        }
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
 export default {
     getAllCommunities,
     createCommunity,
-    findCommunityById
+    findCommunityById,
+    findCommunityByPostId,
 }
 

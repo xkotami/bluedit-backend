@@ -10,6 +10,7 @@ export type Post = {
     id?: number;
     user: User;
     comments: Comment[];
+    createdAt: Date;
 }
 
 export type Community = {
@@ -18,6 +19,7 @@ export type Community = {
     users: User[];
     name: string;
     description: string;
+    createdAt: Date;
 }
 
 export type Comment = {

@@ -8,6 +8,7 @@ export class Community {
     readonly description: string;
     readonly posts: Post[];
     readonly users: User[];
+    readonly createdAt: Date;
 
     constructor(community: Community) {
         this.id = community.id;
@@ -15,6 +16,7 @@ export class Community {
         this.description = community.description;
         this.posts = community.posts;
         this.users = community.users;
+        this.createdAt = community.createdAt;
     }
 
     static from(community: CommunityPrisma & {
@@ -38,7 +40,8 @@ export class Community {
             name: community.name,
             description: community.description,
             posts: community.posts?.map(post => Post.from(post)) || [],
-            users: community.users?.map(user => User.from(user)) || []
+            users: community.users?.map(user => User.from(user)) || [],
+            createdAt: community.createdAt
         });
     }
 }

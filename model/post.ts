@@ -9,6 +9,7 @@ export class Post {
     readonly content?: string;
     readonly user: User;
     readonly comments: Comment[];
+    readonly createdAt: Date;
 
     constructor(post: Post) {
         this.id = post.id;
@@ -16,6 +17,7 @@ export class Post {
         this.content = post.content;
         this.user = post.user;
         this.comments = post.comments;
+        this.createdAt = post.createdAt;
     }
 
     static from(post: PostPrisma & {
@@ -41,7 +43,8 @@ export class Post {
             title: post.title,
             content: post.content,
             user: User.from(post.user),
-            comments: post.comments.map(comment => Comment.from(comment))
+            comments: post.comments.map(comment => Comment.from(comment)),
+            createdAt: post.createdAt,
         });
     }
 }

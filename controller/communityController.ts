@@ -173,4 +173,16 @@ communityRouter.get("/:id", async (req, res, next) => {
     }
 });
 
+communityRouter.get("/post/:id", async (req, res, next) => {
+    try {
+        const postId: number = parseInt(req.params.id);
+        const response = await communityService.findCommunityByPostId(postId);
+        res.status(200).json(response);
+    } catch (error: any) {
+        console.log(error);
+        next(error);
+        res.status(500).json({ message: error.message });
+    }
+});
+
 export default communityRouter;

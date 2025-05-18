@@ -21,8 +21,19 @@ const findPostById = async (id: string, token: string) => {
         throw error;
     }
 }
+
+const getAllPostsOfCommunity = async (communityId: string, token: string) => {
+    try {
+        return await postDb.getAllPostsOfCommunity(parseInt(communityId))
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
 export default {
     getAllPosts,
     createPost,
-    findPostById
+    findPostById,
+    getAllPostsOfCommunity,
 }

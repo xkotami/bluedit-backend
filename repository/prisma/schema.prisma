@@ -46,12 +46,14 @@ model Post {
   user        User      @relation(fields: [userId], references: [id])
   communityId Int
   community   Community @relation(fields: [communityId], references: [id])
+  createdAt   DateTime  @default(now())
 }
 
 model Community {
-  id          Int    @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   posts       Post[]
   users       User[]
   name        String
   description String
+  createdAt   DateTime @default(now())
 }

@@ -113,8 +113,42 @@ const findPostById = async (id: number) => {
     }
 }
 
+const getAllPostsOfCommunity = async (communityId: number) => {
+    try {
+        const posts = await database.post.findMany({
+            where: {
+                communityId
+            },
+            include: {
+                user: true,
+                community: true,
+                comments: {
+                    include: {
+                        createdBy: true,
+                        parent: {
+                            include: {
+                                createdBy: true
+                            }
+                        },
+                        replies: {
+                            include: {
+                                createdBy: true
+                            }
+                        }
+                    }
+                }
+            }
+        })
+        return posts.map(post => {Post.from(post)})
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
 export default {
     getAllPosts,
     createPost,
-    findPostById
+    findPostById,
+    getAllPostsOfCommunity,
 }
