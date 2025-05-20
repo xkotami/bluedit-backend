@@ -1,12 +1,24 @@
 import { Post } from '../model/post';
 import postDb from '../repository/postRepository';
 import {PostInput} from "../types";
+import jwt from "../util/jwt";
 
-const getAllPosts = async (): Promise<Post[]> => await postDb.getAllPosts();
+const getAllPosts = async (token: string): Promise<Post[]> => {
+    try {
+        jwt.validateToken(token);
+        return await postDb.getAllPosts();
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+};
 
 const createPost = async (input: PostInput, token: string) => {
     try {
-        return await postDb.createPost(input);
+        console.log(token)
+        const decodedToken = jwt.validateToken(token);
+        const newInput: PostInput = {title: input.title, content: input.content, userId: decodedToken.userId!, communityId: input.communityId};
+        return await postDb.createPost(newInput);
     } catch (error) {
         console.log(error);
         throw error;
@@ -15,6 +27,7 @@ const createPost = async (input: PostInput, token: string) => {
 
 const findPostById = async (id: string, token: string) => {
     try {
+        jwt.validateToken(token);
         return await postDb.findPostById(parseInt(id))
     } catch (error) {
         console.log(error);
@@ -24,6 +37,7 @@ const findPostById = async (id: string, token: string) => {
 
 const getAllPostsOfCommunity = async (communityId: string, token: string) => {
     try {
+        jwt.validateToken(token);
         return await postDb.getAllPostsOfCommunity(parseInt(communityId))
     } catch (error) {
         console.log(error);

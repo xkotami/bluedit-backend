@@ -3,10 +3,13 @@ import {User} from "../model/user";
 import {Login, Register, UserInput} from "../types";
 
 const getAllUsers = async () => {
-    const users = await database.user.findMany({
-
-    })
-    return users.map(user => User.from(user))
+    try {
+        const users = await database.user.findMany({})
+        return users.map(user => User.from(user))
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
 }
 
 const createUser = async (input: UserInput) => {

@@ -20,13 +20,6 @@ const communityRouter = express.Router();
  *     description: Fetches a list of all the communities. Requires a valid authorization token.
  *     tags:
  *       - Communities
- *     parameters:
- *       - in: header
- *         name: Authorization
- *         required: true
- *         schema:
- *           type: string
- *         description: A bearer token for authentication (e.g., "Bearer token").
  *     responses:
  *       200:
  *         description: A list of communities.
@@ -109,7 +102,7 @@ communityRouter.get("/", async (req, res, next) => {
 communityRouter.get("/user", async (req, res, next) => {
     try {
         const token = req.headers.authorization!.split(" ")[1];
-        const response = communityService.getCommunitiesByTokenUserId(token);
+        const response = await communityService.getCommunitiesByTokenUserId(token);
         res.status(200).json(response);
     } catch (error: any) {
         console.log(error);
@@ -143,13 +136,6 @@ communityRouter.get("/user", async (req, res, next) => {
  *               description:
  *                 type: string
  *                 description: A short description of the community.
- *     parameters:
- *       - in: header
- *         name: Authorization
- *         required: true
- *         schema:
- *           type: string
- *         description: A bearer token for authentication (e.g., "Bearer token").
  *     responses:
  *       200:
  *         description: The community was created successfully.

@@ -8,6 +8,8 @@ const postRouter = express.Router();
  * @swagger
  * /post:
  *   get:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Retrieve all posts
  *     description: Fetches a list of all posts available in the system.
  *     tags:
@@ -47,7 +49,7 @@ const postRouter = express.Router();
 postRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const token = req.headers.authorization!.split(" ")[1];
-        const response = await postService.getAllPosts();
+        const response = await postService.getAllPosts(token);
         res.status(200).json(response);
     } catch (error: any) {
         console.log(error);
@@ -59,6 +61,8 @@ postRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
  * @swagger
  * /post:
  *   post:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Create a new post
  *     description: Adds a new post to the system. Authorization token may be required depending on implementation.
  *     tags:
@@ -86,13 +90,6 @@ postRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
  *               communityId:
  *                 type: integer
  *                 description: Optional ID of the community the post should belong to.
- *     parameters:
- *       - in: header
- *         name: Authorization
- *         required: false
- *         schema:
- *           type: string
- *         description: A bearer token may be required if authentication is implemented.
  *     responses:
  *       200:
  *         description: The post was created successfully.
@@ -130,8 +127,9 @@ postRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
 postRouter.post("/", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const token = req.headers.authorization!.split(" ")[1];
+        console.log(token);
         const input: PostInput = req.body as PostInput;
-        const response = await postService.createPost(input, "token");
+        const response = await postService.createPost(input, token);
         res.status(200).json(response);
     } catch (error: any) {
         console.log(error);
@@ -143,6 +141,8 @@ postRouter.post("/", async (req: Request, res: Response, next: NextFunction) => 
  * @swagger
  * /post/{id}:
  *   get:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Retrieve a post by ID
  *     description: Fetches details of a specific post from the system using its unique ID. Requires an authorization token.
  *     tags:
@@ -154,12 +154,6 @@ postRouter.post("/", async (req: Request, res: Response, next: NextFunction) => 
  *         schema:
  *           type: string
  *         description: The unique ID of the post to retrieve.
- *       - in: header
- *         name: Authorization
- *         required: true
- *         schema:
- *           type: string
- *         description: A bearer token for authentication (e.g., "Bearer token").
  *     responses:
  *       200:
  *         description: Post details retrieved successfully.
@@ -200,7 +194,7 @@ postRouter.get('/:id', async (req: Request, res: Response, next: NextFunction) =
     try {
         const token = req.headers.authorization!.split(" ")[1];
         const id: string = req.params.id;
-        const response = await postService.findPostById(id, "token");
+        const response = await postService.findPostById(id, token);
         res.status(200).json(response);
     } catch (error: any) {
         console.log(error);

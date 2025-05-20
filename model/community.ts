@@ -49,7 +49,7 @@ export class Community {
     }
 
     validate(community: Community) {
-        if (!community.description) throw new Error('ERROR_DESCRIPTION_NOT_PRESENT');
-        if (!community.name) throw new Error('ERROR_NAME_NOT_PRESENT');
+        //if (!community.description) throw new Error('ERROR_DESCRIPTION_NOT_PRESENT');
+        //if (!community.name) throw new Error('ERROR_NAME_NOT_PRESENT');
     }
 }

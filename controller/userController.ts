@@ -8,6 +8,8 @@ const userRouter = express.Router();
  * @swagger
  * /user:
  *   get:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Retrieve all users
  *     description: Fetches a list of all users in the system. Requires a valid authorization token.
  *     tags:
@@ -36,7 +38,8 @@ const userRouter = express.Router();
  */
 userRouter.get("/", async (req, res, next) => {
     try {
-        const response = await userService.getAllUsers("token");
+        const token = req.headers.authorization!.split(" ")[1];
+        const response = await userService.getAllUsers(token);
         res.status(200).json(response);
     } catch (error: any) {
         console.log(error);
@@ -49,6 +52,8 @@ userRouter.get("/", async (req, res, next) => {
  * @swagger
  * /user/{id}:
  *   get:
+ *     security:
+ *       - bearerAuth: []
  *     summary: Retrieve a user by ID
  *     description: Fetches details of a specific user from the system using their user ID. Requires an authorization token.
  *     tags:

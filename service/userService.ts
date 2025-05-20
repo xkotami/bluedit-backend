@@ -7,9 +7,10 @@ import bcrypt from "bcrypt";
 const getAllUsers = async (token: string) => {
     try {
         jwt.validateToken(token);
-        return await userDb.getAllUsers()
+        return await userDb.getAllUsers();
     } catch (error) {
         console.log(error);
+        throw error;
     }
 }
 
