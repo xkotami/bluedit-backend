@@ -46,6 +46,32 @@ const createComment = async (input: CommentInput) => {
     return Comment.from(comment);
 }
 
+const getCommentsByPost = async (id: number) => {
+    try {
+        const comments = await database.comment.findMany({
+            where: {
+                post: {
+                    id: id
+                }
+            },
+            include: {
+                parent: {
+                    include: {
+                        createdBy: true
+                    }
+                },
+                createdBy: true
+            }
+        })
+        return comments.map(comment => {
+            const parent = comment.parent ?? undefined;
+            return Comment.from({ ...comment, parent });})
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
 const findCommentById = async (id: number) => {
     try {
         const comment = await database.comment.findUnique({
@@ -72,8 +98,36 @@ const findCommentById = async (id: number) => {
     }
 }
 
+const findCommentsByUserId = async (id: number) => {
+    try{
+        const comments = await database.comment.findMany({
+            where: {
+                createdBy: {
+                    id: id
+                }
+            },
+            include: {
+                parent: {
+                    include: {
+                        createdBy: true
+                    }
+                },
+                createdBy: true
+            }
+        })
+        return comments.map(comment => {
+            const parent = comment.parent ?? undefined;
+            return Comment.from({ ...comment, parent });})
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
 export default {
     getAllComments,
     createComment,
     findCommentById,
+    findCommentsByUserId,
+    getCommentsByPost
 }

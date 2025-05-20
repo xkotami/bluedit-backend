@@ -114,6 +114,181 @@ const findCommunityById = async (id: number) => {
     }
 }
 
+const getCommunitiesByUserId = async (id: number) => {
+    try {
+        const communities = await database.community.findMany({
+            where: {
+                users: {
+                    some: {
+                        id : id
+                    }
+                }
+            },
+            include: {
+                posts: {
+                    include: {
+                        comments: {
+                            include: {
+                                createdBy: true,
+                                parent: {
+                                    include: {
+                                        createdBy: true
+                                    }
+                                },
+                                replies: {
+                                    include: {
+                                        createdBy: true
+                                    }
+                                }
+                            }
+                        },
+                        user: true,
+                        community: true
+                    }
+                },
+                users: true
+            }
+        })
+        return communities.map(community => Community.from(community));
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+const joinCommunity = async (userId: number, communityId: number) => {
+    try {
+        const community = await database.community.update({
+            where: {
+                id: communityId
+            },
+            data: {
+                users: {
+                    connect: {
+                        id: userId
+                    }
+                }
+            },
+            include: {
+                posts: {
+                    include: {
+                        comments: {
+                            include: {
+                                createdBy: true,
+                                parent: {
+                                    include: {
+                                        createdBy: true
+                                    }
+                                },
+                                replies: {
+                                    include: {
+                                        createdBy: true
+                                    }
+                                }
+                            }
+                        },
+                        user: true,
+                        community: true
+                    }
+                },
+                users: true
+            }
+        })
+        return Community.from(community);
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+const getUserInCommunity = async (userId: number, communityId: number) => {
+    try {
+        const community = await database.community.findUnique({
+            where: {
+                id: communityId,
+                users: {
+                    some: {
+                        id: userId
+                    }
+                }
+            },
+            include: {
+                posts: {
+                    include: {
+                        comments: {
+                            include: {
+                                createdBy: true,
+                                parent: {
+                                    include: {
+                                        createdBy: true
+                                    }
+                                },
+                                replies: {
+                                    include: {
+                                        createdBy: true
+                                    }
+                                }
+                            }
+                        },
+                        user: true,
+                        community: true
+                    }
+                },
+                users: true
+            }
+        })
+        return community ? Community.from(community) : null ;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+const leaveCommunity = async (userId: number, communityId: number) => {
+    try {
+        const community = await database.community.update({
+            where: {
+                id: communityId
+            },
+            data: {
+                users: {
+                    disconnect: {
+                        id: userId
+                    }
+                }
+            },
+            include: {
+                posts: {
+                    include: {
+                        comments: {
+                            include: {
+                                createdBy: true,
+                                parent: {
+                                    include: {
+                                        createdBy: true
+                                    }
+                                },
+                                replies: {
+                                    include: {
+                                        createdBy: true
+                                    }
+                                }
+                            }
+                        },
+                        user: true,
+                        community: true
+                    }
+                },
+                users: true
+            }
+        })
+        return Community.from(community);
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
 const findCommunityByPostId = async (postId: number) => {
     try {
         const community = await database.community.findFirst({
@@ -164,6 +339,10 @@ export default {
     getAllCommunities,
     createCommunity,
     findCommunityById,
+    getCommunitiesByUserId,
+    joinCommunity,
+    getUserInCommunity,
+    leaveCommunity,
     findCommunityByPostId,
 }
 

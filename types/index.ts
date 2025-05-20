@@ -33,7 +33,7 @@ export type Comment = {
 
 export type CommentInput = {
     text: string;
-    userId: number;
+    userId?: number;
     postId: number;
 }
 
@@ -60,4 +60,20 @@ export type UserInput = {
 export type CommunityInput = {
     name: string;
     description: string;
+}
+
+export type JWTPayload = {
+    email: string;
+    userId?: number;
+}
+
+export type Login = {
+    email: string;
+    password: string;
+}
+
+export type Register = {
+    username: string;
+    email: string;
+    password: string;
 }
