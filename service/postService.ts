@@ -3,9 +3,8 @@ import postDb from '../repository/postRepository';
 import {PostInput} from "../types";
 import jwt from "../util/jwt";
 
-const getAllPosts = async (token: string): Promise<Post[]> => {
+const getAllPosts = async (): Promise<Post[]> => {
     try {
-        jwt.validateToken(token);
         return await postDb.getAllPosts();
     } catch (error) {
         console.log(error);
@@ -25,9 +24,8 @@ const createPost = async (input: PostInput, token: string) => {
     }
 }
 
-const findPostById = async (id: string, token: string) => {
+const findPostById = async (id: string) => {
     try {
-        jwt.validateToken(token);
         return await postDb.findPostById(parseInt(id))
     } catch (error) {
         console.log(error);
@@ -35,9 +33,8 @@ const findPostById = async (id: string, token: string) => {
     }
 }
 
-const getAllPostsOfCommunity = async (communityId: string, token: string) => {
+const getAllPostsOfCommunity = async (communityId: string) => {
     try {
-        jwt.validateToken(token);
         return await postDb.getAllPostsOfCommunity(parseInt(communityId))
     } catch (error) {
         console.log(error);

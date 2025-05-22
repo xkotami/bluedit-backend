@@ -2,7 +2,7 @@ import communityDb from '../repository/communityRepository';
 import {CommunityInput} from "../types";
 import jwt from "../util/jwt";
 
-const getAllCommunities = async (token: string) => {
+const getAllCommunities = async () => {
     try {
         return await communityDb.getAllCommunities();
     } catch (error) {

@@ -48,8 +48,7 @@ const postRouter = express.Router();
  */
 postRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const token = req.headers.authorization!.split(" ")[1];
-        const response = await postService.getAllPosts(token);
+        const response = await postService.getAllPosts();
         res.status(200).json(response);
     } catch (error: any) {
         console.log(error);
@@ -126,7 +125,16 @@ postRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
  */
 postRouter.post("/", async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const token = req.headers.authorization!.split(" ")[1];
+        // Check if authorization header exists
+        if (!req.headers.authorization) {
+            return res.status(401).json({ error: 'Authorization token required' });
+        }
+
+        const token = req.headers.authorization.split(" ")[1];
+        if (!token) {
+            return res.status(401).json({ error: 'Invalid authorization format' });
+        }
+
         console.log(token);
         const input: PostInput = req.body as PostInput;
         const response = await postService.createPost(input, token);
@@ -192,9 +200,8 @@ postRouter.post("/", async (req: Request, res: Response, next: NextFunction) => 
  */
 postRouter.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const token = req.headers.authorization!.split(" ")[1];
         const id: string = req.params.id;
-        const response = await postService.findPostById(id, token);
+        const response = await postService.findPostById(id);
         res.status(200).json(response);
     } catch (error: any) {
         console.log(error);
@@ -202,14 +209,64 @@ postRouter.get('/:id', async (req: Request, res: Response, next: NextFunction) =
     }
 });
 
+/**
+ * @swagger
+ * /post/community/{id}:
+ *   get:
+ *     summary: Get all posts from a specific community
+ *     description: Retrieves all posts that belong to a specific community. This endpoint is public and doesn't require authentication.
+ *     tags:
+ *       - Posts
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The unique ID of the community.
+ *     responses:
+ *       200:
+ *         description: List of posts from the community retrieved successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     description: The unique ID of the post.
+ *                   title:
+ *                     type: string
+ *                     description: The title of the post.
+ *                   content:
+ *                     type: string
+ *                     description: The content of the post.
+ *                   userId:
+ *                     type: integer
+ *                     description: The ID of the user who created the post.
+ *                   communityId:
+ *                     type: integer
+ *                     description: The ID of the community the post belongs to.
+ *                   createdAt:
+ *                     type: string
+ *                     format: date-time
+ *                     description: Timestamp when the post was created.
+ *       400:
+ *         description: Bad request. Invalid community ID format.
+ *       404:
+ *         description: Community not found or no posts in community.
+ *       500:
+ *         description: Internal server error.
+ */
 postRouter.get('/community/:id', async (req: Request, res: Response, next: NextFunction) => {
     try {
         const communityId: string = req.params.id;
-        const response = await postService.getAllPostsOfCommunity(communityId, "token");
+        const response = await postService.getAllPostsOfCommunity(communityId);
         res.status(200).json(response);
     } catch (error: any) {
         console.log(error);
-        next(error);
         res.status(500).json({ message: error.message });
     }
 });

@@ -16,13 +16,22 @@ const port = process.env.APP_PORT || 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
- app.use(
-     expressjwt({
-         secret: process.env.JWT_SECRET || 'default',
-         algorithms: ["HS256"],
-     }).unless({
-         path: ['/api-docs', /^\/api-docs\/.*/, '/user/login', '/status', '/user/register']
-     }))
+app.use(
+    expressjwt({
+        secret: process.env.JWT_SECRET || 'default',
+        algorithms: ["HS256"],
+    }).unless({
+        path: [
+            '/api-docs',
+            /^\/api-docs\/.*/,
+            '/user/login',
+            '/user/register',
+            '/status',
+            /^\/post\/.*/,
+            /^\/community\/.*/,
+        ]
+    })
+);
 app.use('/comment', commentRouter);
 app.use('/community', communityRouter);
 app.use('/post', postRouter);

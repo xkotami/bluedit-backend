@@ -54,8 +54,7 @@ const commentRouter = express.Router();
  */
 commentRouter.get("/", async (req, res, next) => {
     try{
-        const token = req.headers.authorization!.split(" ")[1];
-        const response = await commentService.getAllCommentsByUser(token);
+        const response = await commentService.getAllComments();
         res.status(200).json(response);
     } catch(error: any) {
         console.log(error);

@@ -3,14 +3,18 @@ import postDb from '../repository/postRepository'
 import {CommentInput} from "../types";
 import jwt from "../util/jwt";
 
-const getAllCommentsByUser = async (token: string) => {
+const getAllComments = async () => {
     try {
-        const decodedToken = jwt.validateToken(token);
-        if (!decodedToken.userId) {
-            throw new Error("ERROR_INVALID_TOKEN");
-        } else {
-            return await commentDb.findCommentsByUserId(decodedToken.userId);
-        }
+        return await commentDb.getAllComments();
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+const getAllCommentsByUser = async (userId: number) => {
+    try {
+        return await commentDb.findCommentsByUserId(userId);
     } catch (error) {
         console.log(error);
         throw error;
@@ -54,6 +58,7 @@ const findCommentById = async (id: number) => {
 }
 
 export default {
+    getAllComments,
     getAllCommentsByUser,
     createComment,
     findCommentById,

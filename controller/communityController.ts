@@ -47,7 +47,7 @@ const communityRouter = express.Router();
  */
 communityRouter.get("/", async (req, res, next) => {
     try {
-        const response = await communityService.getAllCommunities("token");
+        const response = await communityService.getAllCommunities();
         res.status(200).json(response);
     } catch (error) {
         console.log(error);
