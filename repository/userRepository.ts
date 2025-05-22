@@ -76,7 +76,7 @@ const getUserByUsername = async (username: string) => {
         if (user) {
             return User.from(user)
         } else {
-            throw new Error('ERROR_USER_NOT_FOUND');
+            return null;
         }
     } catch(error) {
         console.log(error);

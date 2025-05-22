@@ -35,14 +35,24 @@ const findUserById = async (id: number, token: string) => {
 const register = async (input: Register) => {
     try {
         const user = await userDb.getUserByEmail(input.email);
-        if (user) {
+        const user2 = await userDb.getUserByUsername(input.username);
+        if (user || user2) {
             throw new Error("ERROR_USER_EXISTS")
         }
         const hashedPassword = await bcrypt.hash(input.password, 10);
 
         // create with hashed password
         const repoInput: Register = {username: input.username, email: input.email, password: hashedPassword};
-        return userDb.register(repoInput);
+        const newUser = await userDb.register(repoInput);
+
+        // generate access token
+        const token = jwt.generateJwtToken({email: newUser.email, userId: newUser.id})
+
+        return {
+            token: token,
+            email: newUser.email,
+            id: newUser.id,
+        }
     } catch (error) {
         console.log(error);
         throw error;
@@ -66,9 +76,6 @@ const login = async (input: Login) => {
             email: user.email,
             id: user.id,
         }
-
-
-
 
     } catch (error) {
         console.log(error);
