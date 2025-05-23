@@ -1,8 +1,9 @@
 import jwt from "jsonwebtoken";
+import { SignOptions } from 'jsonwebtoken';
 import {JWTPayload} from "../types";
 
 const generateJwtToken = ({email, userId}: JWTPayload): string => {
-    const options = {expiresIn: `${process.env.JWT_EXPIRES_HOURS}h`, issuer: 'bluedit-company'}
+    const options:SignOptions = {expiresIn: "1h", issuer: 'bluedit-company'}
 
     try {
         return jwt.sign({email, userId}, process.env.JWT_SECRET as string, options);

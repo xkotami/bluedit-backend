@@ -1,0 +1,13 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "AzureWebJobsFeatureFlags": "EnableWorkerIndexing",
+    "DATABASE_URL":"postgresql://postgres:postgres@localhost:5432/bludit?schema=public" 
+  },
+  "Host": {
+    "CORS": "*",
+    "CORS_SUPPORT_CREDENTIALS": true
+  }
+}
