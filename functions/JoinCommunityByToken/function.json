@@ -1,0 +1,17 @@
+{ "scriptFile": "../dist/JoinCommunityByToken/index.js",
+  "bindings": [
+    {
+      "authLevel": "anonymous",
+      "type": "httpTrigger",
+      "direction": "in",
+      "name": "req",
+      "methods": ["put"],
+      "route": "community/join/{id}"
+    },
+    {
+      "type": "http",
+      "direction": "out",
+      "name": "res"
+    }
+  ]
+}

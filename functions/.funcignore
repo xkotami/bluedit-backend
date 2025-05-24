@@ -9,6 +9,5 @@ __queuestorage__
 local.settings.json
 test
 tsconfig.json
-dist/controller/
 .env
 /src

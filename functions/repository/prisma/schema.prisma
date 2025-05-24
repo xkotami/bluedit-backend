@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int         @id @default(autoincrement())
+  username    String      @unique
+  email       String      @unique
+  points      Int         @default(0)
+  posts       Post[]
+  communities Community[]
+  comments    Comment[]
+  password    String
+}
+
+model Comment {
+  id        Int       @id @default(autoincrement()) // Unique identifier
+  text      String // The content of the comment
+  parentId  Int? // References the parent comment (nullable for top-level comments)
+  parent    Comment?  @relation("ParentToReplies", fields: [parentId], references: [id]) // Recursive parent relationship
+  replies   Comment[] @relation("ParentToReplies") // Replies to this comment (one-to-many)
+  createdAt DateTime  @default(now()) // Automatically store created-at timestamp
+  points    Int       @default(0) // Number of points/upvotes (default to 0)
+  postId    Int // ID of the post this comment belongs to
+  post      Post      @relation(fields: [postId], references: [id]) // Relation to the associated post
+  userId    Int // ID of the user who created the comment
+  createdBy User      @relation(fields: [userId], references: [id]) // Relation to the user who created the comment
+
+  // Indexes for performance optimization
+  @@index([parentId]) // Index for parent-child queries
+  @@index([postId]) // Index for fetching comments by post
+  @@index([userId]) // Index for user-based queries
+}
+
+model Post {
+  id          Int       @id @default(autoincrement())
+  title       String
+  content     String
+  comments    Comment[]
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id])
+  communityId Int
+  community   Community @relation(fields: [communityId], references: [id])
+  createdAt   DateTime  @default(now())
+}
+
+model Community {
+  id          Int      @id @default(autoincrement())
+  posts       Post[]
+  users       User[]
+  name        String
+  description String
+  createdAt   DateTime @default(now())
+}

@@ -1,0 +1,18 @@
+{
+  "scriptFile": "../dist/GetAllCommentsByUser/index.js",
+  "bindings": [
+    {
+      "authLevel": "anonymous",
+      "type": "httpTrigger",
+      "direction": "in",
+      "name": "req",
+      "methods": ["get"],
+      "route": "comments"
+    },
+    {
+      "type": "http",
+      "direction": "out",
+      "name": "res"
+    }
+  ]
+}

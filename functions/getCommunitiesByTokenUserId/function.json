@@ -1,0 +1,18 @@
+{
+  "scriptFile": "../dist/getCommunitiesByTokenUserId/index.js",
+  "bindings": [
+    {
+      "authLevel": "anonymous",
+      "type": "httpTrigger",
+      "direction": "in",
+      "name": "req",
+      "methods": ["get"],
+      "route": "community/user"
+    },
+    {
+      "type": "http",
+      "direction": "out",
+      "name": "res"
+    }
+  ]
+}

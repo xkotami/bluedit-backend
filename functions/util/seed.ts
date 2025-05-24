@@ -1,28 +1,22 @@
-"use strict";
 // Execute: npx ts-node seed.ts
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const client_1 = require("@prisma/client");
-const bcryptjs_1 = require("bcryptjs");
-const prisma = new client_1.PrismaClient();
-const main = () => __awaiter(void 0, void 0, void 0, function* () {
+
+import { PrismaClient } from '@prisma/client';
+import { hash } from 'bcryptjs';
+
+const prisma = new PrismaClient();
+
+const main = async () => {
     // Clear existing data
-    yield prisma.comment.deleteMany();
-    yield prisma.post.deleteMany();
-    yield prisma.community.deleteMany();
-    yield prisma.user.deleteMany();
+    await prisma.comment.deleteMany();
+    await prisma.post.deleteMany();
+    await prisma.community.deleteMany();
+    await prisma.user.deleteMany();
+
     // Hash passwords
-    const password = yield (0, bcryptjs_1.hash)('password123', 10);
+    const password = await hash('password123', 10);
+
     // Create users
-    const users = yield Promise.all([
+    const users = await Promise.all([
         prisma.user.create({
             data: {
                 username: 'tech_guru',
@@ -72,8 +66,9 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             }
         })
     ]);
+
     // Create communities
-    const communities = yield Promise.all([
+    const communities = await Promise.all([
         prisma.community.create({
             data: {
                 name: 'Web Development',
@@ -120,8 +115,9 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             }
         })
     ]);
+
     // Create posts
-    const posts = yield Promise.all([
+    const posts = await Promise.all([
         // Web Development posts
         prisma.post.create({
             data: {
@@ -139,6 +135,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 communityId: communities[0].id
             }
         }),
+
         // JavaScript posts
         prisma.post.create({
             data: {
@@ -156,6 +153,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 communityId: communities[1].id
             }
         }),
+
         // Data Science posts
         prisma.post.create({
             data: {
@@ -165,6 +163,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 communityId: communities[2].id
             }
         }),
+
         // DevOps posts
         prisma.post.create({
             data: {
@@ -182,6 +181,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 communityId: communities[3].id
             }
         }),
+
         // UI/UX Design posts
         prisma.post.create({
             data: {
@@ -192,8 +192,9 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             }
         })
     ]);
+
     // Create comments with hierarchical relationships
-    yield Promise.all([
+    await Promise.all([
         // React vs Vue post comments
         prisma.comment.create({
             data: {
@@ -234,6 +235,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 })
             ]);
         }),
+
         // REST API authentication post comments
         prisma.comment.create({
             data: {
@@ -251,6 +253,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 points: 18
             }
         }),
+
         // TypeScript post comments
         prisma.comment.create({
             data: {
@@ -270,6 +273,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 }
             });
         }),
+
         // pnpm post comments
         prisma.comment.create({
             data: {
@@ -279,6 +283,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 points: 30
             }
         }),
+
         // PyTorch post comments
         prisma.comment.create({
             data: {
@@ -288,6 +293,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 points: 15
             }
         }),
+
         // Terraform vs Pulumi post comments
         prisma.comment.create({
             data: {
@@ -318,6 +324,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 })
             ]);
         }),
+
         // Accessibility post comments
         prisma.comment.create({
             data: {
@@ -328,21 +335,22 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             }
         })
     ]);
+
     console.log('Seed data created successfully!');
     console.log(`Created:
 - ${users.length} users
 - ${communities.length} communities
 - ${posts.length} posts
 - Numerous comments with thread structures`);
-});
-(() => __awaiter(void 0, void 0, void 0, function* () {
+};
+
+(async () => {
     try {
-        yield main();
-        yield prisma.$disconnect();
-    }
-    catch (error) {
+        await main();
+        await prisma.$disconnect();
+    } catch (error) {
         console.error('Error seeding data:', error);
-        yield prisma.$disconnect();
+        await prisma.$disconnect();
         process.exit(1);
     }
-}))();
+})();

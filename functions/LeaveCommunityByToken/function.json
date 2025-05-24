@@ -1,0 +1,17 @@
+{ "scriptFile": "../dist/LeaveCommunityByToken/index.js",
+  "bindings": [
+    {
+      "authLevel": "anonymous",
+      "type": "httpTrigger",
+      "direction": "in",
+      "name": "req",
+      "methods": ["put"],
+      "route": "community/leave/{id}"
+    },
+    {
+      "type": "http",
+      "direction": "out",
+      "name": "res"
+    }
+  ]
+}

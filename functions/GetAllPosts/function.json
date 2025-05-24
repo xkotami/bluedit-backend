@@ -1,0 +1,18 @@
+{
+  "scriptFile": "../dist/GetAllPosts/index.js",
+  "bindings": [
+    {
+      "authLevel": "anonymous",
+      "type": "httpTrigger",
+      "direction": "in",
+      "name": "req",
+      "methods": ["get"],
+      "route": "posts"
+    },
+    {
+      "type": "http",
+      "direction": "out",
+      "name": "res"
+    }
+  ]
+}
