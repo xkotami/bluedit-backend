@@ -136,7 +136,7 @@ postRouter.post("/", async (req: Request, res: Response, next: NextFunction) => 
         }
 
         console.log(token);
-        const input: PostInput = req.body as PostInput;
+        const input: PostInput = req.body.input as PostInput;
         const response = await postService.createPost(input, token);
         res.status(200).json(response);
     } catch (error: any) {

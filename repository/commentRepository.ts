@@ -1,6 +1,6 @@
 import database from "./database";
 import {Comment} from "../model/comment"
-import {CommentInput} from "../types";
+import { CommentInput, ReplyInput } from '../types';
 
 const getAllComments = async () => {
     const comments = await database.comment.findMany({
@@ -26,6 +26,38 @@ const createComment = async (input: CommentInput) => {
             post: {
                 connect: {
                     id: input.postId
+                }
+            },
+            createdBy: {
+                connect: {
+                    id: input.userId
+                }
+            }
+        },
+        include: {
+            parent: {
+                include: {
+                    createdBy: true
+                }
+            },
+            createdBy: true
+        }
+    })
+    return Comment.from(comment);
+}
+
+const createReply = async (input: ReplyInput) => {
+    const comment = await database.comment.create({
+        data: {
+            text: input.text,
+            post: {
+                connect: {
+                    id: input.postId
+                }
+            },
+            parent: {
+                connect: {
+                    id: input.parentId
                 }
             },
             createdBy: {
@@ -127,6 +159,7 @@ const findCommentsByUserId = async (id: number) => {
 export default {
     getAllComments,
     createComment,
+    createReply,
     findCommentById,
     findCommentsByUserId,
     getCommentsByPost

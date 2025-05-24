@@ -29,6 +29,7 @@ app.use(
             '/status',
             /^\/post\/.*/,
             /^\/community\/.*/,
+            /^\/comment\/.*/,
         ]
     })
 );

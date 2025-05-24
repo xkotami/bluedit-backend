@@ -1,6 +1,6 @@
 import express, {response} from "express";
 import commentService from "../service/commentService";
-import {CommentInput} from "../types";
+import { CommentInput, ReplyInput } from '../types';
 
 const commentRouter = express.Router();
 
@@ -55,6 +55,17 @@ const commentRouter = express.Router();
 commentRouter.get("/", async (req, res, next) => {
     try{
         const response = await commentService.getAllComments();
+        res.status(200).json(response);
+    } catch(error: any) {
+        console.log(error);
+        res.status(500).json({message: error.message});
+    }
+});
+
+commentRouter.get("/user/:id", async (req, res, next) => {
+    try{
+        const id = parseInt(req.params.id);
+        const response = await commentService.getAllCommentsByUser(id);
         res.status(200).json(response);
     } catch(error: any) {
         console.log(error);
@@ -120,8 +131,20 @@ commentRouter.get("/", async (req, res, next) => {
 commentRouter.post("/", async (req, res, next) => {
     try {
         const token = req.headers.authorization!.split(" ")[1];
-        const input = req.body as CommentInput;
+        const input = req.body.input as CommentInput;
         const response = await commentService.createComment(input, token);
+        res.status(200).json(response);
+    } catch (error: any) {
+        console.log(error);
+        res.status(500).json({ message: error.message });
+    }
+});
+
+commentRouter.post("/reply", async (req, res, next) => {
+    try {
+        const token = req.headers.authorization!.split(" ")[1];
+        const input = req.body.input as ReplyInput;
+        const response = await commentService.createReply(input, token);
         res.status(200).json(response);
     } catch (error: any) {
         console.log(error);
@@ -179,7 +202,6 @@ commentRouter.post("/", async (req, res, next) => {
  */
 commentRouter.get("/:id", async (req, res, next) => {
     try {
-        const token = req.headers.authorization!.split(" ")[1];
         const id = parseInt(req.params.id);
         const response = await commentService.findCommentById(id);
         res.status(200).json(response);
