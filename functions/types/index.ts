@@ -6,6 +6,7 @@ export type User = {
     password: string;
 }
 
+
 export type Post = {
     id?: number;
     user: User;

@@ -100,11 +100,51 @@ const register = async (input: Register) => {
         throw error;
     }
 }
+
+const addPoints = async (id: number) => {
+    try {
+        const user = await database.user.update({
+            where: {
+                id: id
+            },
+            data: {
+                points: {
+                    increment: 1
+                }
+            }
+        })
+        return User.from(user);
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+const removePoints = async (id: number) => {
+    try {
+        const user = await database.user.update({
+            where: {
+                id: id
+            },
+            data: {
+                points: {
+                    increment: -1
+                }
+            }
+        })
+        return User.from(user);
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
 export default {
     getAllUsers,
     createUser,
     getUserById,
     getUserByEmail,
     register,
-    getUserByUsername
+    getUserByUsername,
+    addPoints,
+    removePoints
 }
