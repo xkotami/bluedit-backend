@@ -139,7 +139,7 @@ const getAllPostsOfCommunity = async (communityId: number) => {
                 }
             }
         })
-        return posts.map(post => {Post.from(post)})
+        return posts.map(post => Post.from(post))
     } catch (error) {
         console.log(error);
         throw error;

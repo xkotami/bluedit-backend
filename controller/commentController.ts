@@ -131,7 +131,7 @@ commentRouter.get("/user/:id", async (req, res, next) => {
 commentRouter.post("/", async (req, res, next) => {
     try {
         const token = req.headers.authorization!.split(" ")[1];
-        const input = req.body.input as CommentInput;
+        const input = req.body as CommentInput;
         const response = await commentService.createComment(input, token);
         res.status(200).json(response);
     } catch (error: any) {
@@ -143,7 +143,7 @@ commentRouter.post("/", async (req, res, next) => {
 commentRouter.post("/reply", async (req, res, next) => {
     try {
         const token = req.headers.authorization!.split(" ")[1];
-        const input = req.body.input as ReplyInput;
+        const input = req.body as ReplyInput;
         const response = await commentService.createReply(input, token);
         res.status(200).json(response);
     } catch (error: any) {

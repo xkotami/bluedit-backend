@@ -33,10 +33,10 @@ app.use(
         ]
     })
 );
-app.use('/comment', commentRouter);
-app.use('/community', communityRouter);
-app.use('/post', postRouter);
-app.use('/user', userRouter);
+app.use('/comments', commentRouter);
+app.use('/communities', communityRouter);
+app.use('/posts', postRouter);
+app.use('/users', userRouter);
 
 app.get('/status', (req, res) => {
     res.json({ message: 'Back-end is running...' });
