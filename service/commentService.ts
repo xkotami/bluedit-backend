@@ -81,6 +81,22 @@ const findCommentById = async (id: number) => {
     }
 }
 
+const voting = async (commentId: number, upvote: boolean, token: string) => {
+    try {
+        const decodedToken = jwt.validateToken(token);
+        if (!decodedToken) throw new Error("ERROR_INVALID_TOKEN");
+        if (!await commentDb.findCommentById(commentId)) throw new Error("ERROR_INVALID_COMMENT");
+        if (upvote) {
+            return await commentDb.upvote(commentId);
+        } else {
+            return await commentDb.downvote(commentId);
+        }
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
 export default {
     getAllComments,
     getAllCommentsByUser,
@@ -88,4 +104,5 @@ export default {
     createReply,
     findCommentById,
     getCommentsByPost,
+    voting
 }
