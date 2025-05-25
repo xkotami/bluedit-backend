@@ -1,4 +1,6 @@
-import commentDb from '../repository/commentRepository'
+import commentDb from '../repository/commentRepository';
+import userDb from '../repository/userRepository';
+
 import postDb from '../repository/postRepository'
 import { CommentInput, ReplyInput } from '../types';
 import jwt from "../util/jwt";
@@ -81,6 +83,29 @@ const findCommentById = async (id: number) => {
     }
 }
 
+const voting = async (commentId: number, upvote: boolean, token: string) => {
+    try {
+        const decodedToken = jwt.validateToken(token);
+        if (!decodedToken) throw new Error("ERROR_INVALID_TOKEN");
+
+        const comment = await commentDb.findCommentById(commentId);
+        if (!comment) throw new Error("ERROR_INVALID_COMMENT");
+
+        if (upvote) {
+            await userDb.addPoints(comment.createdBy.id!);
+            return await commentDb.upvote(commentId);
+
+        } else {
+            await userDb.removePoints(comment.createdBy.id!);
+            return await commentDb.downvote(commentId);
+        }
+
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
 export default {
     getAllComments,
     getAllCommentsByUser,
@@ -88,4 +113,5 @@ export default {
     createReply,
     findCommentById,
     getCommentsByPost,
+    voting
 }

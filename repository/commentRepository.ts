@@ -156,11 +156,57 @@ const findCommentsByUserId = async (id: number) => {
     }
 }
 
+const upvote = async(id: number) => {
+    const comment = await database.comment.update({
+        where: {
+            id: id
+        },
+        data: {
+            points: {
+                increment: 1
+            }
+        },
+        include: {
+            parent: {
+                include: {
+                    createdBy: true
+                }
+            },
+            createdBy: true
+        }
+    })
+    return Comment.from(comment);
+}
+
+const downvote = async(id: number) => {
+    const comment = await database.comment.update({
+        where: {
+            id: id
+        },
+        data: {
+            points: {
+                increment: -1
+            }
+        },
+        include: {
+            parent: {
+                include: {
+                    createdBy: true
+                }
+            },
+            createdBy: true
+        }
+    })
+    return Comment.from(comment);
+}
+
 export default {
     getAllComments,
     createComment,
     createReply,
     findCommentById,
     findCommentsByUserId,
-    getCommentsByPost
+    getCommentsByPost,
+    upvote,
+    downvote
 }
