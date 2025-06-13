@@ -92,12 +92,19 @@ const getCommentsByPost = async (id: number) => {
                         createdBy: true
                     }
                 },
-                createdBy: true
+                createdBy: true,
+                replies: {  // Include replies recursively
+                    include: {
+                        createdBy: true,
+                        parent: true
+                    }
+                }
             }
         })
         return comments.map(comment => {
             const parent = comment.parent ?? undefined;
-            return Comment.from({ ...comment, parent });})
+            return Comment.from({ ...comment, parent });
+        })
     } catch (error) {
         console.log(error);
         throw error;
