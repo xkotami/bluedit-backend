@@ -78,38 +78,47 @@ const createReply = async (input: ReplyInput) => {
     return Comment.from(comment);
 }
 
-const getCommentsByPost = async (id: number) => {
+const getCommentsByPost = async (postId: number) => {
     try {
         const comments = await database.comment.findMany({
-            where: {
-                post: {
-                    id: id
-                }
-            },
+            where: { postId },
             include: {
-                parent: {
-                    include: {
-                        createdBy: true
-                    }
-                },
                 createdBy: true,
-                replies: {  // Include replies recursively
-                    include: {
-                        createdBy: true,
-                        parent: true
+                parent: true, // Needed to check parentId
+            },
+            orderBy: { createdAt: 'asc' } // Optional, for ordering
+        });
+
+        const buildTree = (flatComments: typeof comments) => {
+            const map: Record<number, any> = {};
+            const roots: any[] = [];
+
+            // Prepare map and initialize replies array
+            flatComments.forEach(comment => {
+                map[comment.id] = { ...comment, replies: [] };
+            });
+
+            flatComments.forEach(comment => {
+                if (comment.parentId) {
+                    const parent = map[comment.parentId];
+                    if (parent) {
+                        parent.replies.push(map[comment.id]);
                     }
+                } else {
+                    roots.push(map[comment.id]);
                 }
-            }
-        })
-        return comments.map(comment => {
-            const parent = comment.parent ?? undefined;
-            return Comment.from({ ...comment, parent });
-        })
+            });
+
+            return roots;
+        };
+
+        const tree = buildTree(comments);
+        return tree.map(c => Comment.from(c));
     } catch (error) {
         console.log(error);
         throw error;
     }
-}
+};
 
 const findCommentById = async (id: number) => {
     try {
