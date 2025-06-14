@@ -1,6 +1,6 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions";
-import commentService from "../../service/commentService";
-import { ReplyInput } from "../../types";
+import commentService from "../service/commentService";
+import { ReplyInput } from "../types";
 
 const CreateReply: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
     context.log(`Http POST request received at "${req.url}"`);
