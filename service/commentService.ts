@@ -67,7 +67,13 @@ const createReply = async (input: ReplyInput, token: string) => {
         if (! await postDb.findPostById(input.postId)) throw new Error("ERROR_INVALID_POST");
         if (! await commentDb.findCommentById(input.parentId)) throw new Error("ERROR_INVALID_COMMENT");
 
-        return await commentDb.createReply(input);
+        // Fix: Use the decoded token's userId, not the input userId
+        return await commentDb.createReply({
+            text: input.text,
+            userId: decodedToken.userId as number,  // ✅ Use token's userId
+            postId: input.postId,
+            parentId: input.parentId
+        });
     } catch (error) {
         console.log(error);
         throw error;
