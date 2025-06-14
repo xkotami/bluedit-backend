@@ -24,8 +24,8 @@ app.use(
         path: [
             '/api-docs',
             /^\/api-docs\/.*/,
-            '/user/login',
-            '/user/register',
+            '/users/login',
+            '/users/register',
             '/status',
             /^\/post\/.*/,
             /^\/community\/.*/,
